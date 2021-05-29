@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { addVote } from "../reducers/anecdoteReducer"
+import { messageChange, messageClear } from "../reducers/notificationReducer"
 
 const Anecdote = ({ anecdote, handleClick }) => {
   return (
@@ -17,19 +18,36 @@ const Anecdote = ({ anecdote, handleClick }) => {
 }
 
 const AnecdoteList = () => {
-  let anecdotes = useSelector(state => state)
+  let anecdotes = useSelector(state => state.anecdotes)
   anecdotes.sort((a, b) => b.votes - a.votes)
+  const filter = useSelector(state => state.filter)
+
+  let entries = new RegExp(".*"+filter.toLowerCase()+".*")
+  let filteredAnecdotes = []
+  anecdotes.map(anecdote => {
+    if (entries.test(anecdote.content.toLowerCase())) {
+      filteredAnecdotes.push(anecdote)
+    }
+    return null
+  })
+
   const dispatch = useDispatch()
+
+  const handleClick = (id, anecdote) => {
+    dispatch(addVote(id))
+    dispatch(messageChange(`Vote added for ${anecdote}`))
+    setTimeout(() => {
+      dispatch(messageClear())
+    }, 5000)
+  }
 
   return (
     <div className="anecdoteList">
-      {anecdotes.map(anecdote =>
+      {filteredAnecdotes.map(anecdote =>
         <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
-          handleClick={() =>
-            dispatch(addVote(anecdote.id))
-          }
+          handleClick={() => handleClick(anecdote.id, anecdote.content)}
         />
       )}
     </div>
