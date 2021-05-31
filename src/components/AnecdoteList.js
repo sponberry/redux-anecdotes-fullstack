@@ -34,8 +34,8 @@ const AnecdoteList = () => {
   const dispatch = useDispatch()
 
   const handleClick = (id, anecdote) => {
-    dispatch(addVote(id))
-    dispatch(messageChange(`Vote added for ${anecdote}`))
+    dispatch(addVote(id, anecdote))
+    dispatch(messageChange(`Vote added for "${anecdote.content}"`))
     setTimeout(() => {
       dispatch(messageClear())
     }, 5000)
@@ -47,7 +47,7 @@ const AnecdoteList = () => {
         <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
-          handleClick={() => handleClick(anecdote.id, anecdote.content)}
+          handleClick={() => handleClick(anecdote.id, anecdote)}
         />
       )}
     </div>
