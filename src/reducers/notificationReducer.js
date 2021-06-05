@@ -10,13 +10,13 @@ const notificationReducer = (state = "", action) => {
   }
 }
 
+let time
 export const messageChange = ( message, seconds ) => {
+  clearTimeout(time)
   return async dispatch => {
-    let time
-    clearTimeout(time)
     dispatch({
       type: "NEW_MESSAGE",
-      message: `${message} ${time}`,
+      message,
     })
     time = setTimeout(() => {
       dispatch({ type: "CLEAR_MESSAGE" })
